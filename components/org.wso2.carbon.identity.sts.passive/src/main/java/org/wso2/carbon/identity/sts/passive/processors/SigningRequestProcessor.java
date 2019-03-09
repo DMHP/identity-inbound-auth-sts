@@ -34,6 +34,9 @@ import org.apache.ws.security.WSSecurityEngineResult;
 import org.apache.ws.security.WSUsernameTokenPrincipal;
 import org.apache.ws.security.handler.WSHandlerConstants;
 import org.apache.ws.security.handler.WSHandlerResult;
+import org.wso2.carbon.base.ServerConfiguration;
+import org.wso2.carbon.identity.application.authentication.framework.model.AuthenticatedUser;
+import org.wso2.carbon.identity.core.util.IdentityUtil;
 import org.wso2.carbon.identity.sts.passive.RequestToken;
 import org.wso2.carbon.identity.sts.passive.ResponseToken;
 import org.wso2.carbon.identity.sts.passive.utils.PassiveSTSUtil;
@@ -41,8 +44,13 @@ import org.wso2.carbon.identity.sts.passive.utils.PassiveSTSUtil;
 import javax.xml.stream.XMLStreamException;
 import java.util.Vector;
 
+import static org.wso2.carbon.identity.application.authentication.framework.util.FrameworkConstants.AUTHENTICATED_USER;
+
 public class SigningRequestProcessor extends RequestProcessor {
     private static final Log log = LogFactory.getLog(SigningRequestProcessor.class);
+
+    public static final String STS_SIGNATURE_ALGORITHM = "Security.STSSignatureAlgorithm";
+    public static final String STS_DIGEST_ALGORITHM = "Security.STSDigestAlgorithm";
 
     public ResponseToken process(RequestToken request) throws TrustException {
 
@@ -92,8 +100,20 @@ public class SigningRequestProcessor extends RequestProcessor {
 
         ConfigurationContext configurationContext = context.getConfigurationContext();
         configurationContext.setProperty(TokenStorage.TOKEN_STORAGE_KEY, PassiveSTSUtil.getTokenStorage());
+        context.setProperty("spTenantDomain", request.getTenantDomain());
+
+        AuthenticatedUser authenticatedUser = (AuthenticatedUser) IdentityUtil.threadLocalProperties.get()
+                .get(AUTHENTICATED_USER);
+        context.setProperty(AUTHENTICATED_USER, authenticatedUser);
 
         rahasData = new RahasData(context);
+
+        ServerConfiguration serverConfig = ServerConfiguration.getInstance();
+
+        String signatureAlgorithm = serverConfig.getFirstProperty(STS_SIGNATURE_ALGORITHM);
+        String digestAlgorithm = serverConfig.getFirstProperty(STS_DIGEST_ALGORITHM);
+        samlTokenIssuerConfig.setSignatureAlgorithm(signatureAlgorithm);
+        samlTokenIssuerConfig.setDigestAlgorithm(digestAlgorithm);
 
         if (RahasConstants.TOK_TYPE_SAML_10.equalsIgnoreCase(requestedTokenType)) {
             SAMLPassiveTokenIssuer issuer1_0 = new SAMLPassiveTokenIssuer();

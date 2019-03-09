@@ -27,7 +27,7 @@
     <groupId>org.wso2.carbon.identity.inbound.auth.sts</groupId>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>identity-inbound-auth-sts</artifactId>
-    <version>5.2.3-SNAPSHOT</version>
+    <version>5.2.19-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Identity STS Management</name>
     <description>
@@ -37,7 +37,8 @@
 
     <scm>
         <url>https://github.com/wso2-extensions/identity-inbound-auth-sts.git</url>
-        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-inbound-auth-sts.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/wso2-extensions/identity-inbound-auth-sts.git
+        </developerConnection>
         <connection>scm:git:https://github.com/wso2-extensions/identity-inbound-auth-sts.git</connection>
         <tag>HEAD</tag>
     </scm>
@@ -253,6 +254,24 @@
                 <groupId>org.wso2.carbon.identity.framework</groupId>
                 <artifactId>org.wso2.carbon.identity.base</artifactId>
                 <version>${identity.framework.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jcl-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>log4j-over-slf4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>commons-collections</groupId>
+                        <artifactId>commons-collections</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>commons-collections.wso2</groupId>
@@ -275,25 +294,61 @@
                 <artifactId>cxf-bundle</artifactId>
                 <version>${cxf-bundle.wso2.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.testng</groupId>
+                <artifactId>testng</artifactId>
+                <version>${testng.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-testng</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powermock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jacoco</groupId>
+                <artifactId>org.jacoco.agent</artifactId>
+                <classifier>runtime</classifier>
+                <version>${jacoco.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${org.slf4j.verison}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${org.slf4j.verison}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity.framework</groupId>
+                <artifactId>org.wso2.carbon.identity.testutil</artifactId>
+                <version>${identity.framework.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>org.apache.felix.scr.ds-annotations</artifactId>
+                <version>${apache.felix.scr.ds.annotations.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
     <build>
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-scr-plugin</artifactId>
-                    <version>1.7.2</version>
-                    <executions>
-                        <execution>
-                            <id>generate-scr-scrdescriptor</id>
-                            <goals>
-                                <goal>scr</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
+
                 <plugin>
                     <groupId>org.apache.felix</groupId>
                     <artifactId>maven-bundle-plugin</artifactId>
@@ -322,6 +377,19 @@
                         <doCheck>false</doCheck>
                         <doUpdate>false</doUpdate>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-scr-plugin</artifactId>
+                    <version>${maven.scr.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-scr-scrdescriptor</id>
+                            <goals>
+                                <goal>scr</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -356,15 +424,16 @@
     </build>
 
     <properties>
-        <identity.framework.version>5.7.0</identity.framework.version>
-        <identity.inbound.auth.sts.package.export.version>${project.version}</identity.inbound.auth.sts.package.export.version>
+        <identity.framework.version>5.10.22</identity.framework.version>
+        <identity.inbound.auth.sts.package.export.version>${project.version}
+        </identity.inbound.auth.sts.package.export.version>
         <inbound.auth.openid.version>5.2.0</inbound.auth.openid.version>
 
         <carbon.kernel.version>4.4.7</carbon.kernel.version>
 
         <carbon.xfer.package.version>4.2.0</carbon.xfer.package.version>
         <wss4j.version>1.5.11.wso2v16</wss4j.version>
-        <rampart.wso2.version>1.6.1.wso2v24</rampart.wso2.version>
+        <rampart.wso2.version>1.6.1-wso2v28</rampart.wso2.version>
         <opensaml2.wso2.version>2.6.4.wso2v5</opensaml2.wso2.version>
         <commons-fileupload.wso2.version>1.2.2.wso2v1</commons-fileupload.wso2.version>
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
@@ -375,7 +444,8 @@
         <neethi.osgi.version.range>[2.0.4.wso2v4,3.0.0)</neethi.osgi.version.range>
 
         <identity.framework.imp.pkg.version.range>[5.7.0,6.0.0)</identity.framework.imp.pkg.version.range>
-        <identity.inbound.auth.openid.imp.pkg.version.range>[5.0.0,6.0.0)</identity.inbound.auth.openid.imp.pkg.version.range>
+        <identity.inbound.auth.openid.imp.pkg.version.range>[5.0.0,6.0.0)
+        </identity.inbound.auth.openid.imp.pkg.version.range>
         <identity.inbound.auth.sts.imp.pkg.version.range>[5.2.0,6.0.0)</identity.inbound.auth.sts.imp.pkg.version.range>
 
         <opensaml2.wso2.osgi.version.range>[2.6.0,3.0.0)</opensaml2.wso2.osgi.version.range>
@@ -397,6 +467,14 @@
         <encoder.wso2.imp.pkg.version.range>[1.2.0.wso2v1, 2.0.0)</encoder.wso2.imp.pkg.version.range>
         <cxf-bundle.wso2.version>2.6.1.wso2v2</cxf-bundle.wso2.version>
 
+        <org.slf4j.verison>1.7.21</org.slf4j.verison>
+        <testng.version>6.9.10</testng.version>
+        <jacoco.version>0.7.9</jacoco.version>
+        <powermock.version>1.7.0</powermock.version>
+        <maven.surefire.plugin.version>2.18.1</maven.surefire.plugin.version>
+
+        <apache.felix.scr.ds.annotations.version>1.2.4</apache.felix.scr.ds.annotations.version>
+        <maven.scr.plugin.version>1.16.0</maven.scr.plugin.version>
     </properties>
 
     <modules>
@@ -428,8 +506,3 @@
     </modules>
 
 </project>
-
-
-
-
-
